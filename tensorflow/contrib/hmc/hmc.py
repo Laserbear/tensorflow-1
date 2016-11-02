@@ -27,6 +27,8 @@ class Hamiltonian_MonteCarlo():
 	def __init__(self,
 				steps,
 				step_size,
+				log_posterior,
 				velocity_func):
 		
+
 
