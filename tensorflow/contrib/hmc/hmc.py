@@ -25,10 +25,42 @@ from tensorflow.python.ops import math_ops
 
 class Hamiltonian_MonteCarlo():
 	def __init__(self,
-				steps,
+				step_count,
 				step_size,
 				log_posterior,
-				velocity_func):
-		
+				velocity_func,
+				pos0 = 0,
+				vel0 = 0):
+''' initizialize variables:
+	
+Args:
+	step_count = number of iterations
+	step_size = magnitude of jump
+	log_posterior = function
+	velocity_func = hamiltonian physics
+	pos0 = initial position
+	vel0 = initial velocity
+'''
+	
+		self.steps = steps
+		self.step_size = step_size
+		self.log_posterior = log_posterior
+		self.velocity_func = velocity_func
+		self.pos = pos0
+		self.vel = vel0
+
+	def __call__(self, step_size, num_steps, log_posterior, velocity_func, pos, vel):
+		vel = vel - 0.5 * step_size * tf.gradients(log_posterior(pos), pos)[0] #adjust velocity 1/2 step
+		pos = pos + vel * step_size #update position
+
+		for i in range(num_steps): #calculate gradients
+			gradient = tf.gradients(log_posterior(pos), pos)[0] # calculate gradient
+			vel = vel - step_size * gradient #update velocity
+			x = x + step_size * vel #update position
+		vel = vel - 0.5 *step_size * tf.gradients(log_posterior(pos), pos)[0] #adjust velocity final 1/2 step
+
+
+
+
 
 
